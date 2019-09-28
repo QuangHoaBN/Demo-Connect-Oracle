@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="BILL">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Decimal" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="Decimal" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="TOTAL" Type="Decimal" Precision="38" Scale="0" Nullable="false" />
+    <NavigationProperty Name="CUSTOMER" Relationship="Self.BILL_FR" FromRole="BILLS" ToRole="CUSTOMERS" />
+  </EntityType>
+  <EntityType Name="CUSTOMER">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Decimal" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CITY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="BILLS" Relationship="Self.BILL_FR" FromRole="CUSTOMERS" ToRole="BILLS" />
+  </EntityType>
+  <Association Name="BILL_FR">
+    <End Role="CUSTOMERS" Type="Self.CUSTOMER" Multiplicity="1" />
+    <End Role="BILLS" Type="Self.BILL" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CUSTOMERS">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BILLS">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="BillCustomerEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BILLS" EntityType="Self.BILL" />
+    <EntitySet Name="CUSTOMERS" EntityType="Self.CUSTOMER" />
+    <AssociationSet Name="BILL_FR" Association="Self.BILL_FR">
+      <End Role="CUSTOMERS" EntitySet="CUSTOMERS" />
+      <End Role="BILLS" EntitySet="BILLS" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
